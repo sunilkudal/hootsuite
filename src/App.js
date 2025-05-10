@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import Publishandschdule from "./components/Publishandschdule";
+import Socialmedia from "./components/Socialmedia";
+import Sociallistening from "./components/Sociallistening";
+import AIcontentcreation from "./components/AIcontentcreation";
+import Engagementtools from "./components/Engagementtools";
+import Inboxandmessaging from "./components/Inboxandmessaging";
+import Employeeadvocacy from "./components/Employeeadvocacy";
+import Socialadvertising from "./components/Socialadvertising";
+import Besttimestopost from "./components/Besttimestopost";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/publish" element={<Publishandschdule />} />
+        <Route path="/social" element={<Socialmedia />} />
+        <Route path="/sociallistening" element={<Sociallistening />} />
+        <Route path="/aicontentcreation" element={<AIcontentcreation />} />
+        <Route path="/engagementtools" element={<Engagementtools />} />
+        <Route path="/inboxandmessaging" element={<Inboxandmessaging />} />
+        <Route path="/employeeadvocacy" element={<Employeeadvocacy />} />
+        <Route path="/socialadvertising" element={<Socialadvertising />} />
+        <Route path="/besttimestopost" element={<Besttimestopost />} />
+      </Routes>
     </div>
   );
 }
