@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Menu,
   X,
@@ -29,7 +29,16 @@ import {
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const dropdownRef = useRef();
+
+  const featuresRef = useRef();
+  const industriesRef = useRef();
+  const resourcesRef = useRef();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setOpenDropdown(null);
+  }, [location]);
 
   const handleDropdownToggle = (menu) => {
     setOpenDropdown((prev) => (prev === menu ? null : menu));
@@ -37,9 +46,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpenDropdown(null);
+      if (
+        featuresRef.current?.contains(event.target) ||
+        industriesRef.current?.contains(event.target) ||
+        resourcesRef.current?.contains(event.target)
+      ) {
+        return;
       }
+      setOpenDropdown(null);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -57,7 +71,6 @@ const Navbar = () => {
     { icon: Gavel, label: "Social advertising", to: "/socialadvertising" },
     { icon: Users2, label: "Best times to post", to: "/besttimestopost" },
   ];
-  
 
   const industries = [
     { icon: Building2, label: "Small business" },
@@ -85,25 +98,24 @@ const Navbar = () => {
   ];
 
   const DropdownMenu = ({ items, footerText }) => (
-    <div className="fixed top-0 left-0  bg-white shadow-lg border rounded-md p-6 w-[550px] z-50 grid grid-cols-2 gap-4">
-     {items.map(({ icon: Icon, label, to, isNew }) => (
-  <Link
-    key={label}
-    to={to}
-    className="flex items-center justify-between hover:text-[#0077b5] cursor-pointer"
-  >
-    <div className="flex items-center gap-3">
-      <Icon className="w-5 h-5 text-[#002b3f]" />
-      <span>{label}</span>
-    </div>
-    {isNew && (
-      <span className="bg-green-300 text-xs text-white px-2 py-0.5 rounded-full">
-        new
-      </span>
-    )}
-  </Link>
-))}
-
+    <div className="absolute top-full left-0 bg-white shadow-lg border rounded-md p-6 w-full md:w-[550px] z-50 grid grid-cols-1 md:grid-cols-2 gap-4">
+      {items.map(({ icon: Icon, label, to, isNew }) => (
+        <Link
+          key={label}
+          to={to || "#"}
+          className="flex items-center justify-between hover:text-[#0077b5] cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <Icon className="w-5 h-5 text-[#002b3f]" />
+            <span>{label}</span>
+          </div>
+          {isNew && (
+            <span className="bg-green-400 text-white text-xs px-2 py-0.5 rounded-full">
+              new
+            </span>
+          )}
+        </Link>
+      ))}
       <div className="col-span-2 border-t pt-4 mt-4 flex items-center gap-2 text-sm font-semibold text-[#002b3f] cursor-pointer hover:text-blue-600">
         {footerText} <ArrowRight size={16} />
       </div>
@@ -111,8 +123,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-white z-50">
-
+    <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-4 md:px-6 py-4 border-b border-gray-200 bg-white z-50">
       <div className="flex items-center gap-2">
         <img
           src="https://www.hootsuite.com/images/owly-symbol-saffron.svg"
@@ -123,7 +134,7 @@ const Navbar = () => {
       </div>
 
       <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-800">
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative" ref={featuresRef}>
           <button
             onClick={() => handleDropdownToggle("features")}
             className="flex items-center gap-1 focus:outline-none"
@@ -135,7 +146,7 @@ const Navbar = () => {
           )}
         </div>
         <div className="cursor-pointer">Integrations</div>
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative" ref={industriesRef}>
           <button
             onClick={() => handleDropdownToggle("industries")}
             className="flex items-center gap-1 focus:outline-none"
@@ -146,7 +157,7 @@ const Navbar = () => {
             <DropdownMenu items={industries} footerText="See all industries" />
           )}
         </div>
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative" ref={resourcesRef}>
           <button
             onClick={() => handleDropdownToggle("resources")}
             className="flex items-center gap-1 focus:outline-none"
@@ -162,10 +173,14 @@ const Navbar = () => {
       </div>
 
       <div className="hidden md:flex items-center gap-4 text-sm">
-        <button className="text-[#002b3f]  mr-4 font-bold">Log in</button>
+      <Link to="/Login">
+        <button className="text-[#002b3f] mr-4 font-bold">Log in</button>
+      </Link>
+      <Link to="/PricingPlans">
         <button className="bg-[#002b3f] text-white px-4 py-2 rounded-md font-semibold">
           Start your free trial
         </button>
+        </Link>
       </div>
 
       <div className="md:hidden">
@@ -176,65 +191,15 @@ const Navbar = () => {
 
       {mobileMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-white shadow-md p-4 md:hidden z-50 text-sm text-gray-800 space-y-4">
-          <details>
-            <summary className="flex items-center gap-1 cursor-pointer">Top features</summary>
-            <div className="mt-2 grid grid-cols-2 gap-4 px-2">
-              {topFeatures.map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 hover:text-[#0077b5] cursor-pointer">
-                  <Icon className="w-5 h-5 text-[#002b3f]" />
-                  <span>{label}</span>
-                </div>
-              ))}
-              <div className="col-span-2 mt-2 flex items-center gap-2 font-semibold text-[#002b3f] cursor-pointer hover:text-blue-600">
-                Explore all features <ArrowRight size={16} />
+          {["Top features", "Integrations", "Industries", "Resources", "Pricing", "Enterprise"].map(
+            (item) => (
+              <div key={item} className="cursor-pointer">
+                {item}
               </div>
-            </div>
-          </details>
-
-          <div className="cursor-pointer">Integrations</div>
-
-          <details>
-            <summary className="flex items-center gap-1 cursor-pointer">Industries</summary>
-            <div className="mt-2 grid grid-cols-2 gap-4 px-2">
-              {industries.map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 hover:text-[#0077b5] cursor-pointer">
-                  <Icon className="w-5 h-5 text-[#002b3f]" />
-                  <span>{label}</span>
-                </div>
-              ))}
-              <div className="col-span-2 mt-2 flex items-center gap-2 font-semibold text-[#002b3f] cursor-pointer hover:text-blue-600">
-                See all industries <ArrowRight size={16} />
-              </div>
-            </div>
-          </details>
-
-          <details>
-            <summary className="flex items-center gap-1 cursor-pointer">Resources</summary>
-            <div className="mt-2 grid grid-cols-2 gap-4 px-2">
-              {resources.map(({ icon: Icon, label, isNew }) => (
-                <div key={label} className="flex items-center justify-between hover:text-[#0077b5] cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <Icon className="w-5 h-5 text-[#002b3f]" />
-                    <span>{label}</span>
-                  </div>
-                  {isNew && (
-                    <span className="bg-green-300 text-xs text-white px-2 py-0.5 rounded-full">
-                      new
-                    </span>
-                  )}
-                </div>
-              ))}
-              <div className="col-span-2 mt-2 flex items-center gap-2 font-semibold text-[#002b3f] cursor-pointer hover:text-blue-600">
-                Explore all resources <ArrowRight size={16} />
-              </div>
-            </div>
-          </details>
-
-          <div className="cursor-pointer">Pricing</div>
-          <div className="cursor-pointer">Enterprise</div>
-
-          <div className="flex flex-col gap-2 pt-4 border-t">
-            <button className="text-[#002b3f] font-medium">Log in</button>
+            )
+          )}
+          <div className="flex flex-col gap-2">
+            <button className="text-[#002b3f] font-bold">Log in</button>
             <button className="bg-[#002b3f] text-white px-4 py-2 rounded-md font-semibold">
               Start your free trial
             </button>

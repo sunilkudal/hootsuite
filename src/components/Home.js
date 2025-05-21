@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -20,9 +21,11 @@ const Home = () => {
 
 
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+            <Link to="/PricingPlans">
             <button className="bg-[#002b3f] text-white px-6 py-3 rounded-md font-semibold w-full sm:w-auto">
               Start your free trial
             </button>
+            </Link>
             <button className="text-[#002b3f] underline font-medium w-full sm:w-auto text-center">
               Request a demo
             </button>
