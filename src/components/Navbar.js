@@ -190,22 +190,58 @@ const Navbar = () => {
       </div>
 
       {mobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-md p-4 md:hidden z-50 text-sm text-gray-800 space-y-4">
-          {["Top features", "Integrations", "Industries", "Resources", "Pricing", "Enterprise"].map(
-            (item) => (
-              <div key={item} className="cursor-pointer">
-                {item}
-              </div>
-            )
-          )}
-          <div className="flex flex-col gap-2">
-            <button className="text-[#002b3f] font-bold">Log in</button>
-            <button className="bg-[#002b3f] text-white px-4 py-2 rounded-md font-semibold">
-              Start your free trial
-            </button>
-          </div>
+  <div className="absolute top-full left-0 w-full bg-white shadow-md p-4 md:hidden z-50 text-sm text-gray-800 space-y-4">
+    {[
+      { label: "Top features", key: "features", data: topFeatures },
+      { label: "Integrations", key: null },
+      { label: "Industries", key: "industries", data: industries },
+      { label: "Resources", key: "resources", data: resources },
+      { label: "Pricing", key: null },
+      { label: "Enterprise", key: null },
+    ].map(({ label, key, data }) => (
+      <div key={label}>
+        <div
+          className="flex justify-between items-center cursor-pointer"
+          onClick={() => key && handleDropdownToggle(key)}
+        >
+          <span>{label}</span>
+          {key && <ChevronDown size={16} />}
         </div>
-      )}
+        {key && openDropdown === key && data && (
+          <div className="mt-2 ml-4 space-y-2">
+            {data.map(({ icon: Icon, label: itemLabel, to, isNew }) => (
+              <Link
+                key={itemLabel}
+                to={to || "#"}
+                className="flex items-center justify-between hover:text-[#0077b5]"
+              >
+                <div className="flex items-center gap-2">
+                  <Icon className="w-4 h-4 text-[#002b3f]" />
+                  <span>{itemLabel}</span>
+                </div>
+                {isNew && (
+                  <span className="bg-green-400 text-white text-xs px-2 py-0.5 rounded-full">
+                    new
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+    <div className="flex flex-col gap-2 pt-4 border-t">
+      <Link to="/Login">
+        <button className="text-[#002b3f] font-bold">Log in</button>
+      </Link>
+      <Link to="/PricingPlans">
+        <button className="bg-[#002b3f] text-white px-4 py-2 rounded-md font-semibold">
+          Start your free trial
+        </button>
+      </Link>
+    </div>
+  </div>
+)}
     </nav>
   );
 };
